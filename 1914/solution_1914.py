@@ -5,16 +5,17 @@ def count_hanoi(n:int) -> int:
         return 1
     return 2 * count_hanoi(n-1) + 1
 
-paths = []
-def paths_hanoi(n: int, src: str, aux: str, dst: str) -> None:
+def paths_hanoi(n: int, src: str, aux: str, dst: str, res: list) -> None:
     if n == 1:
-        paths.append(f"{src} {dst}")
+        res.append(f"{src} {dst}")
         return
-    paths_hanoi(n-1, src, dst, aux)
-    paths.append(f"{src} {dst}")
-    paths_hanoi(n-1, aux, src, dst)
+    paths_hanoi(n-1, src, dst, aux, res)
+    res.append(f"{src} {dst}")
+    paths_hanoi(n-1, aux, src, dst, res)
     
+
 print(count_hanoi(n))
 if n <= 20:
-    paths_hanoi(n, "1", "2", "3")
-    print('\n'.join(paths))
+    res = []
+    paths_hanoi(n, "1", "2", "3", res)
+    print('\n'.join(res))
