@@ -1,28 +1,24 @@
+import sys
+
 # counting sort
-def countingsort(nums: list) -> None:
-    size = len(nums)
-    max_elem = max(nums)
+def countingsort() -> None:
+    MAX = 10000
+    size = int(sys.stdin.readline())
+    count = [0] * (MAX + 1)
 
-    count = [0] * (max_elem + 1)
-    output = [0] * size
+    input_max = 0
 
-    for i in range(size):
-        count[nums[i]] += 1
+    for _ in range(size):
+        n = int(sys.stdin.readline())
+        if n > input_max:
+            input_max = n
+        count[n] += 1
 
-    for i in range(1, max_elem + 1):
-        count[i] += count[i - 1]
+    for i in range(1, input_max + 1):
+        if count[i] == 0:
+            continue
+        
+        for _ in range(count[i]):
+            print(i)
 
-    for i in range(size):
-        output[count[nums[i]] - 1] = nums[i]
-        count[nums[i]] -= 1
-
-    for i in range(size):
-        nums[i] = output[i]
-
-n = int(input())
-nums = []
-for _ in range(n):
-    nums.append(int(input()))
-
-countingsort(nums)
-print(nums)
+countingsort()
