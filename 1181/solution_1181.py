@@ -1,58 +1,61 @@
 import sys
 
-# Quick sort
-def quicksort(words):
-    quicksort_core(words, 0 ,len(words) - 1)
+# Merge sort
 
-def quicksort_core(words: list, start: int, end: int) -> None:
-    if len(words[start:end + 1]) <= 1:
-        return
-    if start > end:
-        return
-    
-    p = partition(words, start, end)
-    quicksort_core(words, start, p - 1)
-    quicksort_core(words, p + 1, end)
+def mergesort(words: list) -> None:
+    if len(words) > 1:
+            
+        partition_index = len(words) // 2
+        L = words[:partition_index]
+        R = words[partition_index:]
+        
+        mergesort(L)
+        mergesort(R)
 
-def partition(words: list, start: int, end: int) -> int:
-    j = start
-    p = start
-    r = end
-
-    while j < r:
-        if compare(words[r], words[j]):
-            swap(words, p, j)
+        i = 0
+        p = 0
+        q = 0
+        
+        while p < len(L) and q < len(R):
+            if compare(L[p], R[q]):
+                words[i] = R[q]
+                q += 1
+            else:
+                words[i] = L[p]
+                p += 1
+            i += 1
+        
+        while p < len(L):
+            words[i] = L[p]
             p += 1
-        j += 1
-    
-    swap(words, p, r)
+            i += 1
+        
+        while q < len(R):
+            words[i] = R[q]
+            q += 1
+            i += 1
 
-    return p
-
-def compare(a: str, b: str) -> bool:
-    if (len(a) > len(b)):
+def compare(l_word: str, right_word: str) -> bool:
+    if (len(l_word) > len(right_word)):
         return True
-    elif (len(a) == len(b)):
-        a_ls = list(a)
-        b_ls = list(b)
-        for i in range(len(a)):
+    elif (len(l_word) == len(right_word)):
+        a_ls = list(l_word)
+        b_ls = list(right_word)
+        for i in range(len(l_word)):
             if a_ls[i] < b_ls[i]:
                 return False
+            elif a_ls[i] > b_ls[i]:
+                return True
         return True
     else:
         return False
-
-def swap(words: list, a: int, b: int) -> None:
-    tmp = words[a]
-    words[a] = words[b]
-    words[b] = tmp
 
 n = int(sys.stdin.readline())
 words = []
 for _ in range(n):
     words.append(sys.stdin.readline().split()[0])
 
-quicksort(words)
+mergesort(words)
 prevword = ""
 for word in words:
     if word != prevword:
