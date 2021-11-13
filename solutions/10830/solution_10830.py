@@ -1,16 +1,19 @@
 import sys
 
 def remn_matrix(matrix: list, power: int) -> list:
-    size = len(matrix)
     if power == 1:
-        return modulo(matrix)
+        modulo(matrix)
+        return matrix
 
     sub_matrix = remn_matrix(matrix, power // 2)
+    squared = multiply(sub_matrix, sub_matrix)
     if power % 2 == 1:
-        return modulo(multiply(multiply(sub_matrix, sub_matrix), matrix))
+        product = multiply(squared, matrix)
+        modulo(product)
+        return product
     else:
-        return modulo(multiply(sub_matrix, sub_matrix))
-
+        modulo(squared)
+        return squared
     
 def multiply(matrix1: list, matrix2: list) -> list:
     size = len(matrix)
@@ -18,20 +21,15 @@ def multiply(matrix1: list, matrix2: list) -> list:
     for i in range(size):
         for j in range(size):
             row = matrix1[i]
-            col = [matrix2[i][j] for i in range(size)]
-            product = sum([row[i] * col[i] for i in range(size)])
-            res[i][j] = product
+            col = [matrix2[k][j] for k in range(size)]
+            res[i][j] = sum([row[k] * col[k] for k in range(size)])
     
     return res
 
-def modulo(matrix: list) -> list:
-    size = len(matrix)
-    res = [[0] * size for _ in range(size)]
+def modulo(matrix: list) -> None:
     for i in range(size):
         for j in range(size):
-            res[i][j] = matrix[i][j] % 1000
-    
-    return res
+            matrix[i][j] = matrix[i][j] % 1000
 
 size, power = list(map(int, sys.stdin.readline().split()))
 matrix = []
