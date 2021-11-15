@@ -1,38 +1,33 @@
 import sys
 
-type = {')': '(', ']': '['}
-price = {'(': 2, '[': 3}
-
 ps = sys.stdin.readline().split()[0]
 
-ptr = 0
-stack = []
-total = 0
-success = True
+matching = {'(': ')', '[': ']'}
 
-while ptr <= len(ps) - 1:
-    if ps[ptr] == '(' or ps[ptr] == '[':
-        if len(stack) != 0:
-            stack[-1][1] = False
-        stack.append([ps[ptr], True])
+parenStack = []
+scoreStack = [0]
+flag = True
+for c in ps:
+    if c == '(' or c == '[':
+        parenStack.append(c)
+        scoreStack.append(0)
     else:
-        if len(stack) == 0:
-            success = False
+        if len(parenStack) == 0:
+            flag = False
             break
-        
-        if type[ps[ptr]] != stack[-1][0]:
-            success = False
+            
+        popped = parenStack.pop()
+        if matching[popped] != c:
+            flag = False
             break
         else:
-            p, flag = stack.pop()
-            if flag == True:
-                tmp = price[p]
-                for i in range(len(stack)):
-                    tmp *= price[stack[i][0]]
-                total += tmp
-    ptr += 1
+            last = scoreStack.pop()
+            if popped == '(':
+                scoreStack[-1] += 2 * last or 2
+            else:
+                scoreStack[-1] += 3 * last or 3
 
-if len(stack) != 0:
-    success = False
+if len(parenStack) != 0:
+    flag = False
 
-print(total) if success == True else print(0)
+print(scoreStack.pop()) if flag == True else print(0)
