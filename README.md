@@ -1,2 +1,1 @@
-# baekjoon-algo
-백준 알고리즘 문제 풀이 저장소
+# Solutions to algorithm problems in [baekjoon](https://www.acmicpc.net/problemset) and [leetcode](https://leetcode.com/problemset/all/)
