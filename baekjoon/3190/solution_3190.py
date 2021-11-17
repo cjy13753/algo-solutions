@@ -2,51 +2,52 @@ import sys
 from collections import deque
 
 boardSize = int(sys.stdin.readline())
+board = [[0] * boardSize for _ in range(boardSize)]
 numApples = int(sys.stdin.readline())
-apples = [list(map(int, sys.stdin.readline().split())) for _ in range(numApples)]
-shifting = deque(sys.stdin.readline().split() for _ in range(int(sys.stdin.readline())))
+for _ in range(numApples):
+    rowApple, colApple = list(map(int, sys.stdin.readline().split()))
+    board[rowApple - 1][colApple - 1] = 1
+numTurns = int(sys.stdin.readline())
+turns = {}
+for _ in range(numTurns):
+    time, turnDirection = sys.stdin.readline().split()
+    turns[int(time)] = turnDirection
 
-direction = {'S': (1, 0), 'W': (0, -1), 'N': (-1, 0), 'E': (0, 1)}
-toWhereOnShifting = {'D': {'E': 'S', 'S': 'W', 'W': 'N', 'N': 'E'}, \
-                     'L': {'E': 'N', 'N': 'W', 'W': 'S', 'S': 'E'}}
+direction = 1
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
 
-curDirection = 'E'
-rowMove = direction['E'][0]
-colMove = direction['E'][1]
-
-snake = deque([[1,1]])
+visited = deque([[0,0]])
 time = 0
 
-flag = True
 while True:
     time += 1
-
-    snake.appendleft([snake[0][0] + rowMove, snake[0][1] + colMove])
-    
-    # snake가 자기 자신을 만나면 게임 종료
-    for i in range(1, len(snake)):
-        if snake[0] == snake[i]:
-            flag = False
-    if flag == False:
-        break
+    row = visited[0][0] + dx[direction]
+    col = visited[0][1] + dy[direction]
 
     # snake가 벽에 닿으면 게임 종료
-    if snake[0][0] < 1 or snake[0][0] > boardSize or snake[0][1] < 1 or snake[0][1] > boardSize:
+    if row < 0 or row >= boardSize or col < 0 or col >= boardSize:
+        break
+    
+    # snake가 자기 자신을 만나면 게임 종료
+    if board[row][col] == 2:
         break
 
-    # 사과를 안 먹으면 꼬리가 잘림, 사과 먹으면 사과 없애주기
-    if snake[0] not in apples:
-        snake.pop()
+    # 사과 먹으면 사과 없애주기, 사과를 안 먹으면 꼬리가 잘림
+    if board[row][col] == 1:
+        board[row][col] = 0        
     else:
-        apples.remove(snake[0])
-    
+        tailRow, tailCol = visited.pop()
+        board[tailRow][tailCol] = 0
+
+    # 아무 문제 없으면 머리를 적절한 방향으로 한 칸 확장하기
+    board[row][col] = 2
+    visited.appendleft([row, col])
 
     # 적절한 시간이 되면 방향이 바뀜
-    if shifting and int(shifting[0][0]) == time:
-        _, leftOrRight = shifting.popleft()
-        directionPairs = toWhereOnShifting[leftOrRight]
-        curDirection = directionPairs[curDirection]
-        rowMove, colMove = direction[curDirection]
-
+    if time in turns.keys():
+        if turns[time] == 'L':
+            direction = (direction - 1) % 4
+        else:
+            direction = (direction + 1) % 4
 print(time)
-
