@@ -2,18 +2,18 @@ import sys
 from collections import Counter
 
 def unionFind(parent: list, src: int, dst: int) -> None:
-    srcParent = findParent(parent, src)
-    dstParent = findParent(parent, dst)
+    src = findParent(parent, src)
+    dst = findParent(parent, dst)
 
-    if srcParent != dstParent:
-        if srcParent < dstParent:
-            parent[dst] = srcParent
+    if src != dst:
+        if src < dst:
+            parent[dst] = src
         else:   
-            parent[src] = dstParent
+            parent[src] = dst
 
 def findParent(parent: list, vertex: int) -> int:
     if parent[vertex] != vertex:
-        parent[vertex] = findParent(parent, parent[vertex])
+        parent[vertex] = findParent(parent, parent[vertex]) # path compression logic applied
     return parent[vertex]
 
 if __name__ == '__main__':
@@ -28,4 +28,3 @@ if __name__ == '__main__':
         findParent(parent, i)
 
     print(len(Counter(parent)) - 1)
-    print(parent)
