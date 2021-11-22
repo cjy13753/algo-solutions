@@ -1,21 +1,12 @@
 import sys
 input = sys.stdin.readline
 
-def findImpossible(i: int, graph: list) -> int:
-    count = 0
-
-    def dfs(ball: int):
-        cnt = 1
-
-        for ball in graph[ball]:
-            cnt += dfs(ball)
-        return cnt
-
+def countDfs(i: int, graph: list, count: int, visited: list) -> int:
+    visited[i] = True
     for ball in graph[i]:
-        count += dfs(ball)
-
+        if visited[ball] == False:
+            count = max(count, countDfs(ball, graph, count + 1, visited))
     return count
-
 
 if __name__ == '__main__':
     numBalls, numPairs = map(int, input().split())
@@ -28,9 +19,12 @@ if __name__ == '__main__':
     
     ans = 0
     for i in range(1, numBalls + 1):
-        if findImpossible(i, decreasingGraph) >= (numBalls + 1) // 2:
+        threshold = (numBalls + 1) // 2
+        visited = [False] * (numBalls + 1)
+        if countDfs(i, decreasingGraph, 0, visited) >= threshold:
             ans += 1
-        if findImpossible(i, increasingGraph) >= (numBalls + 1) // 2:
+        visited = [False] * (numBalls + 1)
+        if countDfs(i, increasingGraph, 0, visited) >= threshold:
             ans += 1
         
     print(ans)
