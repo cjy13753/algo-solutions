@@ -7,13 +7,15 @@ sys.setrecursionlimit(10**9)
 def solution(iceberg: list, rowNum: int, colNum: int) -> int:
     year = 0
 
-    def meltAround(row: int, col: int, rowNum: int, colNum: int) -> None:
+    def meltAround(row: int, col: int, rowNum: int, colNum: int) -> int:
+        cnt = 0
         directions = [0, 1, 0, -1, 0]
         for i in range(len(directions) - 1):
             newRow = row + directions[i]
             newCol = col + directions[i + 1]
-            if newRow >= 0 and newRow < rowNum and newCol >= 0 and newCol < colNum and iceberg[newRow][newCol] > 0:
-                iceberg[newRow][newCol] -= 1
+            if newRow >= 0 and newRow < rowNum and newCol >= 0 and newCol < colNum and iceberg[newRow][newCol] == 0:
+                cnt += 1
+        return cnt
 
     def dfs(visited: List[List[bool]], row: int, col: int, rowNum: int, colNum: int) -> None:
         visited[row][col] = True
@@ -27,17 +29,6 @@ def solution(iceberg: list, rowNum: int, colNum: int) -> int:
         
 
     while True:
-        emptyIcebergList = []
-        for row in range(rowNum):
-            for col in range(colNum):
-                if iceberg[row][col] == 0:
-                    emptyIcebergList.append(([row, col]))
-        
-        # 1년 지날 때마다 빙산이 녹는다. 빙산이 높이가 1 이상인 것들에 대해서만 녹이는 작업을 진행해준다
-        for row, col in emptyIcebergList:
-            meltAround(row, col, rowNum, colNum)
-        year += 1
-
         # 매 loop를 돌 때마다 visited 배열의 요소들을 전부 False로 초기화시켜준다
         visited = [[False] * colNum for _ in range(rowNum)]
         count = 0
@@ -51,8 +42,19 @@ def solution(iceberg: list, rowNum: int, colNum: int) -> int:
         if count >= 2:
             break
         if count == 0:
-            break
-    
+            return 0
+        
+        # 1년 지날 때마다 빙산이 녹는다. 빙산이 높이가 1 이상인 것들에 대해서만 녹이는 작업을 진행해준다
+        temp = [[0] * colNum for _ in range(rowNum)]
+        year += 1
+        for row in range(rowNum):
+            for col in range(colNum):
+                if iceberg[row][col] > 0:
+                    temp[row][col] = meltAround(row, col, rowNum, colNum)
+        for row in range(rowNum):
+            for col in range(colNum):
+                iceberg[row][col] -= temp[row][col]
+
     return year
 
 if __name__ == "__main__":
