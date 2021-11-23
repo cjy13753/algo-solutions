@@ -5,59 +5,56 @@ input = sys.stdin.readline
 if __name__ == '__main__':
     ySize, xSize = map(int, input().split())
     forestMap = [[0] * xSize for _ in range(ySize)]
-    INF = int(1e10)
 
-    hedgeHog = [0, 0]
     beaver = [0, 0]
-    waterQueue = deque()
-    hedgeHogQueue = deque()
 
+    qWater = deque()
+    qHedgeHog = deque()
 
     for y in range(ySize):
-        for x, val in enumerate(input().strip()):
+        for x, val in enumerate(input().strip()): # beaver는 -4, Rock은 -3, water는 -2, 빈 곳이면 -1, hedgeHog는 0
             if val == "D":
                 beaver[0], beaver[1] = y, x
-                forestMap[y][x] = INF
-            elif val == "S":
-                hedgeHog[0], hedgeHog[1] = y, x
-                hedgeHogQueue.append((y, x))
+                forestMap[y][x] = -4
             elif val == 'X':
-                forestMap[y][x] = INF
+                forestMap[y][x] = -3
             elif val == '*':
-                waterQueue.append((y, x))
-            else:
+                qWater.append((y, x))
+                forestMap[y][x] = -2
+            elif val == ".":
+                forestMap[y][x] = -1
+            elif val == "S":
+                qHedgeHog.append((y, x))
                 forestMap[y][x] = 0
 
     dY = [0, 1, 0, -1] # 동, 남, 서, 북
     dX = [1, 0, -1, 0]
-    # 먼저 물로 범람시켜놓기
-    while waterQueue:
-        oY, oX = waterQueue.popleft()
-
-        for i in range(4):
-            nY = oY + dY[i]
-            nX = oX + dX[i]
-
-            if 0 <= nY < ySize and 0 <= nX < xSize and forestMap[nY][nX] == 0:
-                forestMap[nY][nX] = forestMap[oY][oX] + 1
-                waterQueue.append((nY, nX))
     
-    # 고슴도치 이동시키기
-    forestMap[hedgeHog[0]][hedgeHog[1]] = -2 # 초기화
-    while hedgeHogQueue:
-        oY, oX = hedgeHogQueue.popleft()
+    while qWater or qHedgeHog:
+        for i in range(len(qWater)):
+            oY, oX = qWater.popleft()
 
-        for i in range(4):
-            nY = oY + dY[i]
-            nX = oX + dX[i]
+            for i in range(4):
+                nY = oY + dY[i]
+                nX = oX + dX[i]
 
-            if 0 <= nY < ySize and 0 <= nX < xSize:
-                if forestMap[oY][oX] + 1 < forestMap[nY][nX]:
+                if 0 <= nY < ySize and 0 <= nX < xSize and forestMap[nY][nX] == -1:
+                    forestMap[nY][nX] = -2
+                    qWater.append((nY, nX))
+
+        for i in range(len(qHedgeHog)):
+            oY, oX = qHedgeHog.popleft()
+
+            for i in range(4):
+                nY = oY + dY[i]
+                nX = oX + dX[i]
+
+                if 0 <= nY < ySize and 0 <= nX < xSize and (forestMap[nY][nX] == -1 or forestMap[nY][nX] == -4):
                     forestMap[nY][nX] = forestMap[oY][oX] + 1
-                    hedgeHogQueue.append((nY, nX))
-
+                    qHedgeHog.append((nY, nX))
+    
     ans = forestMap[beaver[0]][beaver[1]]
-    if ans == INF:
+    if ans == -4:
         print('KAKTUS')
     else:
-        print(ans+2)
+        print(ans)
