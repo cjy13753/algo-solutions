@@ -1,27 +1,40 @@
 import sys
+from collections import deque
+from typing import List
 input = sys.stdin.readline
 
-def bfs(types: list, threshold: int, sum: int, count: int) -> int:
-    if sum == threshold:
-        return count
-    if sum > threshold:
-        return int(10e10)
+def bfs(coins: List[int], threshold: int) -> int:
+    queue = deque([(1, coin) for coin in coins])
+    sumSet = set(coins)
+    minNumTypes = int(10e10)
 
-    minCount = int(10e10)
-    for i in types:
-        minCount = min(minCount, bfs(types, threshold, sum + i, count + 1))
-    return minCount
+    while queue:
+        count, sum = queue.popleft()
+        if sum == threshold:
+            minNumTypes = min(minNumTypes, count)
+        for newCoin in coins:
+            currSum = sum + newCoin
+            if currSum > threshold:
+                continue
+            if currSum not in sumSet:
+                sumSet.add(currSum)
+                queue.append((count + 1, currSum))
+
+    if minNumTypes == int(10e10):
+        return -1
+    else:
+        return minNumTypes
 
 
 if __name__ == '__main__':
-    numTypes, threshold = map(int, input().split())
-    types = []
+    numCoins, threshold = map(int, input().split())
+    coins = []
 
-    for _ in range(numTypes):
-        types.append(int(input()))
+    for _ in range(numCoins):
+        coins.append(int(input()))
 
-    ans = bfs(types, threshold, 0, 0)
-    if ans == int(10e10):
+    ans = bfs(coins, threshold)
+    if ans == -1:
         print(-1)
     else:
         print(ans)
