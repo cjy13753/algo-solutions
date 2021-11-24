@@ -5,7 +5,6 @@ sys.setrecursionlimit(10**9)
 
 
 def solution(iceberg: list, rowNum: int, colNum: int) -> int:
-    year = 0
 
     def meltAround(row: int, col: int, rowNum: int, colNum: int) -> int:
         cnt = 0
@@ -27,7 +26,7 @@ def solution(iceberg: list, rowNum: int, colNum: int) -> int:
                 if visited[newRow][newCol] == False and iceberg[newRow][newCol] > 0:
                     dfs(visited, newRow, newCol, rowNum, colNum)
         
-
+    year = 0
     while True:
         # 매 loop를 돌 때마다 visited 배열의 요소들을 전부 False로 초기화시켜준다
         visited = [[False] * colNum for _ in range(rowNum)]
@@ -54,6 +53,8 @@ def solution(iceberg: list, rowNum: int, colNum: int) -> int:
         for row in range(rowNum):
             for col in range(colNum):
                 iceberg[row][col] -= temp[row][col]
+                if iceberg[row][col] < 0:
+                    iceberg[row][col] = 0
 
     return year
 
