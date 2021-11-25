@@ -10,27 +10,31 @@ input = sys.stdin.readline
 
 if __name__ == '__main__':
     numIslands, numBridges = map(int, input().split())
-    weightTable = [-1e10] * (numIslands + 1)
+    weightTable = [-1e10] * (numIslands + 1) # 양수값
     graph = defaultdict(list)
-    visited = [False] * (numIslands + 1)
+    visitedRoutes = set()
     maxHeap = []
     for _ in range(numBridges):
         src, dst, weight = list(map(int, input().split()))
-        graph[src].append([-weight, dst])
+        graph[src].append([-weight, dst]) # src: [-weight, dst]
         graph[dst].append([-weight, src])
     
     start, end = map(int, input().split())
     weightTable[start] = 1e10
-    heapq.heappush(maxHeap, (-1e10, start))
+    for negWeight, dst in graph[start]:
+        heapq.heappush(maxHeap, (negWeight, start, dst))
+        heapq.heappush(maxHeap, (negWeight, dst, start))
 
     while maxHeap:
-        negWeight, src = heapq.heappop(maxHeap)
-        visited[src] = True
+        nowNegWeight, src, dst = heapq.heappop(maxHeap)
         
-        for newNegWeight, dst in graph[src]:
-            if visited[dst] == False:
-                if abs(negWeight) > weightTable[dst]:
-                    weightTable[dst] = min(abs(newNegWeight), abs(negWeight))
-                heapq.heappush(maxHeap, [newNegWeight, dst])
+        if (nowNegWeight, src, dst) not in visitedRoutes and (nowNegWeight, dst, src) not in visitedRoutes:
+            visitedRoutes.add((nowNegWeight, src, dst))
+            visitedRoutes.add((nowNegWeight, dst, src))
+            if nowNegWeight > weightTable[dst]: # 더 클 때만 갱신
+                weightTable[dst] = -nowNegWeight
+                for nextNegWeight, nextDst in graph[dst]:
+                    heapq.heappush(maxHeap, (nextNegWeight, dst, nextDst))
+                    heapq.heappush(maxHeap, (nextNegWeight, nextDst, dst))
     
     print(weightTable[end])
