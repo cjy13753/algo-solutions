@@ -28,11 +28,10 @@ if __name__ == '__main__':
     while maxHeap:
         nowNegWeight, src, dst = heapq.heappop(maxHeap)
         
-        if (nowNegWeight, src, dst) not in visitedRoutes and (nowNegWeight, dst, src) not in visitedRoutes:
+        if (nowNegWeight, src, dst) not in visitedRoutes:
             visitedRoutes.add((nowNegWeight, src, dst))
-            visitedRoutes.add((nowNegWeight, dst, src))
-            if nowNegWeight > weightTable[dst]: # 더 클 때만 갱신
-                weightTable[dst] = -nowNegWeight
+            if -nowNegWeight > weightTable[dst]: # 더 클 때만 갱신
+                weightTable[dst] = min(-nowNegWeight, weightTable[src])
                 for nextNegWeight, nextDst in graph[dst]:
                     heapq.heappush(maxHeap, (nextNegWeight, dst, nextDst))
                     heapq.heappush(maxHeap, (nextNegWeight, nextDst, dst))
