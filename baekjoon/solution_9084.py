@@ -1,6 +1,5 @@
 import sys
 input = sys.stdin.readline
-sys.setrecursionlimit(10000)
 
 class Solution:
     def __init__(self) -> None:
@@ -8,28 +7,17 @@ class Solution:
         for _ in range(numCases):
             numCoinTypes = int(input())
             coinTypes = list(map(int, input().split()))
-            targetAmount = int(input())
-            cache = [0] * 10_001
-            print(self.possibleCases(coinTypes, targetAmount, cache))
+            target = int(input())
+            self.possibleCases(coinTypes, target)
 
-    def possibleCases(self, coinTypes: list, targetAmount: int, cache: list) -> int:
-        if targetAmount <= coinTypes[-1]:
-            if cache[targetAmount] == 0:
-                count = 0
-                for i in coinTypes:
-                    if i <= targetAmount:
-                        count += 1
+    def possibleCases(self, coinTypes: list, target: int) -> None:
+        cache = [0] * (target + 1)
+        cache[0] = 1
 
-                cache[targetAmount] = count
+        for coin in coinTypes:
+            for i in range(coin, target + 1):
+                cache[i] += cache[i - coin]
 
-            return cache[targetAmount]
-        
-        sum = 0
-        for i in coinTypes:
-            if cache[targetAmount - i] == 0:
-                cache[targetAmount - i] = self.possibleCases(coinTypes, targetAmount - i, cache)
-            sum += cache[targetAmount - i]
-
-        return sum
+        print(cache[target])
 
 Solution()
