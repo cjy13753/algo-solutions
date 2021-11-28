@@ -10,8 +10,8 @@ class Solution:
         self.dpTopDown(sequenceSize, sequence)
 
     def dpBottomUp(self, sequenceSize: int, sequence: list) -> None:
-        # dpTable의 ith element가 의미하는 바: 0th element에서 시작해서 ith element까지의 수열에서 
-        # ith element를 포함한다고 했을 때 가장 긴 증가하는 수열의 길이 저장
+        # dpTable의 ith element가 의미하는 바: sequence의 0th element에서 시작해서 ith element까지의 수열에서 
+        # ith element로 끝나는 가장 긴 증가하는 수열의 길이가 저장된다.
         dpTable = [1] * sequenceSize 
 
         ans = 0
@@ -24,7 +24,8 @@ class Solution:
         print(ans)
 
     def dpTopDown(self, sequenceSize: int, sequence: list) -> None:
-        # dpTable의 의미는 위와 동일하다.
+        # dpTable의 ith element가 의미하는 바: sequence의 ith element에서 시작해서
+        # 만들 수 있는 가장 긴 증가하는 부분수열의 길이가 저장된다.
         dpTable = [-1] * sequenceSize
         def recur(start) -> int:
             if dpTable[start] != -1:
@@ -37,7 +38,9 @@ class Solution:
             
             return dpTable[start]
 
-        recur(0)
-        print(max(dpTable))
+        ans = 0
+        for i in range(sequenceSize):
+            ans = max(ans, recur(i))
+        print(ans)
 
 Solution()
