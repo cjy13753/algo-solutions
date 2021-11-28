@@ -7,7 +7,7 @@ class Solution:
         sequence = list(map(int, input().split()))
 
         self.dpBottomUp(sequenceSize, sequence)
-        # self.dpTopDown(sequenceSize, sequence)
+        self.dpTopDown(sequenceSize, sequence)
 
     def dpBottomUp(self, sequenceSize: int, sequence: list) -> None:
         # dpTable의 ith element가 의미하는 바: 0th element에서 시작해서 ith element까지의 수열에서 
@@ -23,6 +23,21 @@ class Solution:
             
         print(ans)
 
-    # def dpTopDown(self) -> int:
+    def dpTopDown(self, sequenceSize: int, sequence: list) -> None:
+        # dpTable의 의미는 위와 동일하다.
+        dpTable = [-1] * sequenceSize
+        def recur(start) -> int:
+            if dpTable[start] != -1:
+                return dpTable[start]
+            
+            dpTable[start] = 1
+            for i in range(start + 1, sequenceSize):
+                if sequence[start] < sequence[i]:
+                    dpTable[start] = max(dpTable[start], recur(i) + 1)
+            
+            return dpTable[start]
+
+        recur(0)
+        print(max(dpTable))
 
 Solution()
