@@ -1,6 +1,6 @@
 import sys
-from collections import deque
 input = sys.stdin.readline
+sys.setrecursionlimit(10000)
 
 class Solution:
     def __init__(self) -> None:
@@ -10,29 +10,28 @@ class Solution:
         self.maxPaths(rowNum, colNum, graph)
 
     def maxPaths(self, rowNum: int, colNum: int, graph: list):
-        dp = [[0] * colNum for _ in range(rowNum)]
+        dp = [[-1] * colNum for _ in range(rowNum)]
         dp[0][0] = 1
-        queue = deque()
-        queue.append((1, 0))
-        queue.append((0, 1))
 
-        while queue:
-            sum = 0
-            row, col = queue.popleft()
-
+        def dfs(row: int, col: int):
+            if dp[row][col] != -1:
+                return dp[row][col]
+            if row == 0 and col == 0:
+                return dp[0][0]
+            
+            tmpSum = 0
             for dRow, dCol in (0, 1), (1, 0), (0, -1), (-1, 0):
                 neighborRow = row + dRow
                 neighborCol = col + dCol
 
                 if 0 <= neighborRow < rowNum and 0 <= neighborCol < colNum:
-                    if  graph[row][col] < graph[neighborRow][neighborCol]:
-                        sum += dp[neighborRow][neighborCol]
-                    elif graph[row][col] > graph[neighborRow][neighborCol]:
-                        queue.append((neighborRow, neighborCol))
-            
-            dp[row][col] = max(dp[row][col], sum)
+                    if graph[row][col] < graph[neighborRow][neighborCol]:
+                        tmpSum += dfs(neighborRow, neighborCol)
+                
+            dp[row][col] = tmpSum
+            return dp[row][col]
 
-        print(dp[rowNum - 1][colNum - 1])
+        print(dfs(rowNum - 1, colNum - 1))
 
 
 Solution()
