@@ -1,4 +1,6 @@
 import sys
+from collections import deque
+import heapq
 INF = sys.maxsize
 input = sys.stdin.readline
 
@@ -8,44 +10,31 @@ class Solution:
         jewels = []
         for _ in range(numJewels):
             weight, value = map(int, input().split())
-            jewels.append([value, weight]) # jewels[i] = [value, weight]
+            jewels.append([weight, value]) # jewels[i] = [weight, value]
 
         sacks = []
         for _ in range(numSacks):
             sacks.append(int(input()))
         
-        self.maxValue(jewels, sacks, numSacks)
+        self.maxValue(jewels, sacks)
 
-    # 보석들을 (1순위: 가치 내림차순, 2순위: 무게 내림차순) 정렬한 후, 견딜 수 있는 무게가 가장 낮은 가방부터 차례로 보석들을 넣어본다.
-    # 가방의 경우 견딜 수 있는 무게가 낮은 것부터 오름차순으로 정렬한다.
-    def maxValue(self, jewels: list, sacks: list, numSacks: int) -> None:
-        jewels.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    def maxValue(self, jewels: list, sacks: list) -> None:
+        jewels.sort()
+        jewelsDequeue = deque(jewels)
         sacks.sort()
-        usedSacks = [False] * len(sacks)
+
+        tmpSackMaxHeap = []
 
         maxPrice = 0
 
-        for value, weight in jewels:
-            start = 0
-            end = numSacks - 1
-
-            minWeightIdx = INF
-            while start <= end:
-                mid = start + (end - start) // 2
-                if weight <= sacks[mid]:
-                    if usedSacks[mid] == False:
-                        minWeightIdx = min(minWeightIdx, mid)
-                    else:
-                        left = mid - 1
-                        right = mid + 1
-                    end = mid - 1
-                else:
-                    start = mid + 1
+        for sack in sacks:
+            while jewelsDequeue and jewelsDequeue[0][0] <= sack:
+                _, value = jewelsDequeue.popleft()
+                heapq.heappush(tmpSackMaxHeap, -value)
             
-            if minWeightIdx != INF:
-                usedSacks[minWeightIdx] = True
-                maxPrice += value
+            if tmpSackMaxHeap:
+                maxPrice += heapq.heappop(tmpSackMaxHeap)
 
-        print(maxPrice)
+        print(-maxPrice)
 
 Solution()
