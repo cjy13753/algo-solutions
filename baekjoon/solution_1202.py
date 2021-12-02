@@ -33,19 +33,18 @@ class Solution:
             while start <= end:
                 mid = start + (end - start) // 2
                 if weight <= sacks[mid]:
-                    # 아래 2개의 라인 때문에 발생할 수 있는 반례: bags(1, 5, 10), jewels((100, 5), (50, 1), (10, 10))
-                    if usedSacks[mid] == True: 
-                        start = mid + 1
+                    if usedSacks[mid] == False:
+                        minWeightIdx = min(minWeightIdx, mid)
                     else:
-                        minWeightIdx = mid
-                        end = mid - 1
+                        left = mid - 1
+                        right = mid + 1
+                    end = mid - 1
                 else:
                     start = mid + 1
             
             if minWeightIdx != INF:
-                if usedSacks[minWeightIdx] == False:
-                    usedSacks[minWeightIdx] = True
-                    maxPrice += value
+                usedSacks[minWeightIdx] = True
+                maxPrice += value
 
         print(maxPrice)
 
