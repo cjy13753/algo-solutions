@@ -1,0 +1,2 @@
+# Calculate the area of rectangles spanning horizontally rather than calculating the area of a rectangle on a specific index
+This stack approach looks similar to the approach that I took at the first attempt in commit 3d910c54bc57f65143d56b3b1cd730a4572554a3 where I tried to calculate the trapped amount of rain layer by layer. But this approach with stack eliminates the inefficiency of looping through array n times m where n is the number of elements in the height array and m is the maximum number in the array.
