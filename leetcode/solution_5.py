@@ -1,40 +1,45 @@
 import sys
-from collections import defaultdict
 input = sys.stdin.readline
 
 class Solution:
     def __init__(self) -> None:
-        s = "a"
-        self.longestPalindrome(s)
+        s = "wwwww"
+        print(self.longestPalindrome(s))
 
     def longestPalindrome(self, s: str) -> str:
-        store = defaultdict(list)
-        for i in range(len(s)):
-            for j in range(len(s) - 1, i - 1, -1):
-                while i <= j and s[i] != s[j]:
-                    j -= 1
-                if s[i] == s[j]:
-                    start = i
-                    end = j
-                    flag = True
-                    while start <= end:
-                        if s[start] != s[end]:
-                            flag = False
-                            break
-                        else:
-                            start += 1
-                            end -= 1
-                    if flag == True:
-                        substring = s[i:j+1]
-                        store[substring] = len(substring)
+        length = len(s)
+        dp = [[False] * length for _ in range(length)]
+        for left in range(length):
+            dp[left][left] = True
+        maxPalinLength = 1
+        ans = [0, 0] # [left idx, right idx]
 
-        maxValue = 0
-        keyAtMaxValue = ''
-        for key, value in store.items():
-            if value > maxValue:
-                maxValue = value
-                keyAtMaxValue = key
+        # recur determines if s[left:right + 1] is palindromic
+        def recur(left, right):
+            if dp[left][right] == True:
+                return True
+            
+            if left + 1 <= right - 1:
+                if s[left] == s[right] and recur(left + 1, right - 1) == True:
+                    dp[left][right] = True
+                    return True
+                else:
+                    return False
+            else:
+                if s[left] == s[right]:
+                    dp[left][right] = True
+                    return True
+                else:
+                    return False
 
-        return keyAtMaxValue
+        for left in range(length):
+            for right in range(left, length):
+                if s[left] == s[right] and recur(left, right):
+                    if right - left + 1 > maxPalinLength:
+                        maxPalinLength = right - left + 1
+                        ans[0], ans[1] = left, right
+
+        return s[ans[0]:ans[1] + 1]
+
 
 Solution()
