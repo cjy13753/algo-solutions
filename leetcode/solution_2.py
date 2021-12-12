@@ -1,8 +1,9 @@
 # Summary:
+    # refactored: edited code for better code readability with the same logic as the previous commit
     # your own answer?: yes, with 1 preceding failed attempt with 'wrong answer' message
     # time spent: 45 minutes
-    # time complexity: O(n), Runtime: 73 ms, faster than 39.78% of Python3 online submissions for Add Two Numbers.
-    # space complexity: O(n), Memory Usage: 14.5 MB, less than 12.10% of Python3 online submissions for Add Two Numbers.
+    # time complexity: O(n), 64 ms, faster than 90.66% of Python3 online submissions for Add Two Numbers.
+    # space complexity: O(n), 14.5 MB, less than 12.10% of Python3 online submissions for Add Two Numbers.
 
 # approach sketch
     # Store numbers in singly-linked-lists in queues created for each list
@@ -22,7 +23,6 @@ class ListNode:
 class Solution:
     def __init__(self) -> None:
         pass
-
 
     def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
         queue1 = deque()
@@ -44,33 +44,32 @@ class Solution:
         while queue1 and queue2:
             e1 = queue1.popleft()
             e2 = queue2.popleft()
+            tmpSum = e1 + e2 + roundUp
 
-            if e1 + e2 + roundUp > 9:
-                tmpQueue.append(e1 + e2 + roundUp - 10)
-                roundUp = 1
-            else:
-                tmpQueue.append(e1 + e2 + roundUp)
-                roundUp = 0
+            remainder = (tmpSum) % 10
+            roundUp = (tmpSum) // 10
+
+            tmpQueue.append(remainder)
 
         while queue1:
             e1 = queue1.popleft()
+            
+            tmpSum = e1 + roundUp
 
-            if e1 + roundUp > 9:
-                tmpQueue.append(e1 + roundUp - 10)
-                roundUp = 1
-            else:
-                tmpQueue.append(e1 + roundUp)
-                roundUp = 0
+            remainder = (tmpSum) % 10
+            roundUp = (tmpSum) // 10
+
+            tmpQueue.append(remainder)
         
         while queue2:
             e2 = queue2.popleft()
+            
+            tmpSum = e2 + roundUp
 
-            if e2 + roundUp > 9:
-                tmpQueue.append(e2 + roundUp - 10)
-                roundUp = 1
-            else:
-                tmpQueue.append(e2 + roundUp)
-                roundUp = 0
+            remainder = (tmpSum) % 10
+            roundUp = (tmpSum) // 10
+
+            tmpQueue.append(remainder)
 
         if roundUp == 1:
             tmpQueue.append(1)
