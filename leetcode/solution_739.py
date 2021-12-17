@@ -1,5 +1,12 @@
+'''
+Summary
+
+Your own answer?: No. Reference(https://leetcode.com/problems/daily-temperatures/discuss/109832/Java-Easy-AC-Solution-with-Stack)
+Time Complexity: O(n), Runtime: 1964 ms, faster than 5.00% of Python3 online submissions for Daily Temperatures.
+Space Complexity: O(n), Memory Usage: 25.3 MB, less than 60.94% of Python3 online submissions for Daily Temperatures.
+'''
+
 import sys
-from collections import deque
 from typing import List
 input = sys.stdin.readline
 
@@ -9,28 +16,15 @@ class Solution:
         print(self.dailyTemperatures(temperatures))
 
     def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
-        i = 1
-        cur = 0
-        queue = deque()
+        stack = []
         ans = [0] * len(temperatures)
 
-        while i < len(temperatures):
-            queue.append(temperatures[i])
-            if queue[-1] > temperatures[cur]:
-                ans[cur] = len(queue)
-                queue.popleft()
-                cur += 1
-            i += 1
-        queue.popleft()
-        ans[cur] = 0
-        cur += 1
-        
-        while cur < len(temperatures):
-            if queue and queue[-1] > temperatures[cur]:
-                ans[cur] = len(queue)
-            if queue:
-                queue.popleft()
-            cur += 1
+        for idx, t in enumerate(temperatures):
+            while stack and temperatures[stack[-1]] < t:
+                i = stack.pop()
+                ans[i] = idx - i
+                
+            stack.append(idx)
         
         return ans
 
