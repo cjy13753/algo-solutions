@@ -24,37 +24,37 @@ class MyCircularDeque:
         self.arr = [0] * k
 
     def insertFront(self, value: int) -> bool:
-        if self.currSize == 0:
+        if self.isFull():
+            return False
+        elif self.isEmpty():
             self.head = 0
             self.tail = 0
             self.arr[0] = value
             self.currSize += 1
             return True
-        elif self.currSize < self.maxSize:
+        else:
             self.head = (self.head - 1) % self.maxSize
             self.arr[self.head] = value
             self.currSize += 1
             return True
-        else:
-            return False
 
     def insertLast(self, value: int) -> bool:
-        if self.currSize == 0:
+        if self.isFull():
+            return False
+        elif self.isEmpty():
             self.head = 0
             self.tail = 0
             self.arr[0] = value
             self.currSize += 1
             return True
-        elif self.currSize < self.maxSize:
+        else:
             self.tail = (self.tail + 1) % self.maxSize
             self.arr[self.tail] = value
             self.currSize += 1
             return True
-        else:
-            return False
 
     def deleteFront(self) -> bool:
-        if self.currSize == 0:
+        if self.isEmpty():
             return False
         elif self.currSize == 1:
             self.head = -1
@@ -67,7 +67,7 @@ class MyCircularDeque:
             return True
 
     def deleteLast(self) -> bool:
-        if self.currSize == 0:
+        if self.isEmpty():
             return False
         elif self.currSize == 1:
             self.head = -1
