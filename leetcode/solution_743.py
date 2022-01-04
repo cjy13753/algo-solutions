@@ -1,8 +1,11 @@
 '''
-Summary - Attempt #2
+Summary - Attempt #3
 
-Runtime: 957 ms, faster than 10.38% of Python3 online submissions for Network Delay Time.
-Memory Usage: 16.4 MB, less than 25.06% of Python3 online submissions for Network Delay Time.
+Your own answer?: No
+Reference: https://leetcode.com/problems/network-delay-time/discuss/187713/Python-concise-queue-and-heap-solutions
+
+Runtime: 492 ms, faster than 43.93% of Python3 online submissions for Network Delay Time.
+Memory Usage: 16.3 MB, less than 25.06% of Python3 online submissions for Network Delay Time.
 
 Basic approach: dijkstra with priority queue
 '''
@@ -23,34 +26,20 @@ class Solution:
         print(self.networkDelayTime(times, n, k))
 
     def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
-        INF = 1e10
-        adj_list = defaultdict(list) # adj_list = {src: [(dst, cost), ...]}
+        adj_list = defaultdict(list)
         for src, dst, cost in times:
             adj_list[src].append((dst, cost))
-        distance = {} # {dst: shorted distance up to dst}
-        visited = {}
-        for i in range(1, n + 1):
-            distance[i] = INF
-            visited[i] = False
-
-        minheap = []
-        distance[k] = 0
-        heapq.heappush(minheap, (0, k))
+        distance = {}
+        minheap = [(0, k)]
 
         while minheap:
             cost, src = heapq.heappop(minheap)
 
-            if visited[src] == True:
-                continue
-
-            visited[src] = True
-
-            for dst, newCost in adj_list[src]:
-                accumCost = cost + newCost
-                if accumCost < distance[dst]:
-                    distance[dst] = accumCost
-                    heapq.heappush(minheap, (accumCost, dst))
-
-        return max(distance.values()) if sum(visited.values()) == n else -1
+            if src not in distance:
+                distance[src] = cost
+                for dst, newCost in adj_list[src]:
+                    heapq.heappush(minheap, (cost + newCost, dst))
+        
+        return max(distance.values()) if len(distance) == n else -1
 
 Solution()
