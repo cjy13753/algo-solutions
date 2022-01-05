@@ -1,6 +1,16 @@
+'''
+Summary - attempt #2
+
+Your own answer?: No
+Basic approach: BFS(dijkstra ends up with time limit exceeded)
+Reference: https://leetcode.com/problems/cheapest-flights-within-k-stops/discuss/686774/SUGGESTION-FOR-BEGINNERS-BFS-or-DIJKSHTRA-or-DP
+Runtime: 148 ms, faster than 51.94% of Python3 online submissions for Cheapest Flights Within K Stops.
+Memory Usage: 15.3 MB, less than 71.37% of Python3 online submissions for Cheapest Flights Within K Stops.
+'''
+
 import sys
 from typing import List
-import heapq
+from collections import deque
 input = sys.stdin.readline
 
 class Solution:
@@ -15,32 +25,29 @@ class Solution:
 
     def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
         INF = int(1e10)
-        price = [INF] * n
-        visited = [False] * n
+        distance = [INF] * n
         graph = [[] for _ in range(n)]
         for start, end, p in flights:
             graph[start].append((end, p))
         
-        minheap = [(0, src, 0)] # (price, src, stop_cnt)
-        price[src] = 0
+        queue = deque()
+        queue.append((src, 0, -1)) # (pos, accum, stop_cnt)
 
-        while minheap:
-            p, start, stop_cnt = heapq.heappop(minheap)
+        while queue:
+            pos, accum, stop_cnt = queue.popleft()
 
-            if visited[start] == True:
+            if pos == dst:
                 continue
             
-            visited[start] = True
-        
-            if stop_cnt > k:
+            if stop_cnt == k:
                 continue
+            
+            for nxt, newDistance in graph[pos]:
+                newAccum = accum + newDistance
+                if newAccum < distance[nxt]:
+                    distance[nxt] = newAccum
+                    queue.append((nxt, newAccum, stop_cnt + 1))
 
-            for end, newP in graph[start]:
-                accumP = p + newP
-                if accumP < price[end]:
-                    price[end] = accumP
-                    heapq.heappush(minheap, (accumP, end, stop_cnt +1))
-
-        return -1 if price[dst] == INF else price[dst]
+        return -1 if distance[dst] == INF else distance[dst]
 
 Solution()
