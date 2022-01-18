@@ -8,3 +8,16 @@ For python code snippet generation in VS Code, refer to this [codepen work](http
         - O(V + E) because you loop through all vertices to find ones with 0 indegree and then remove edges extending from 0 indgree nodes.
     - Space Complexity
         - O(V) where V is the number of vertices
+
+# Code Snippet for python3
+- Custom descending sorting order
+``` python3
+class LargerNumKey(str):
+    def __lt__(x, y):
+        return x+y > y+x
+        
+class Solution:
+    def largestNumber(self, nums):
+        largest_num = ''.join(sorted(map(str, nums), key=LargerNumKey))
+        return '0' if largest_num[0] == '0' else largest_num
+```
