@@ -1,13 +1,13 @@
 '''
-Summary - Attempt #1
+Summary - Attempt #2
 
-Your own answer?: Yes
-Time spent: 30m
+Your own answer?: No
+Reference: https://leetcode.com/problems/search-in-rotated-sorted-array/discuss/14435/Clever-idea-making-it-simple
 
-Time complexity: O(nlogn) because in the worst case, you can do a logn search for every element in the list. This answer is worse than just one-passing search.
-Runtime: 44 ms, faster than 64.39% of Python3 online submissions for Search in Rotated Sorted Array.
+Time complexity: O(logn)
+Runtime: 51 ms, faster than 40.62% of Python3 online submissions for Search in Rotated Sorted Array.
 Space complexity: O(1)
-Memory Usage: 14.4 MB, less than 93.57% of Python3 online submissions for Search in Rotated Sorted Array.
+Memory Usage: 14.6 MB, less than 80.84% of Python3 online submissions for Search in Rotated Sorted Array.
 '''
 
 import sys
@@ -21,25 +21,27 @@ class Solution:
         print(self.search(nums, target))
 
     def search(self, nums: List[int], target: int) -> int:
-        INF = int(1e9)
-        check = [INF]
-        
-        def recur(left, right):
-            if (left > right):
-                return
+        INF = int(1e10)
+        left = 0
+        right = len(nums) - 1
 
+        while (left <= right):
             mid = int((left + right) / 2)
-            if nums[mid] == target:
-                check[0] = mid
-                return
-            recur(mid + 1, right)
-            recur(left, mid - 1)
-        
-        recur(0, len(nums) - 1)
-        
-        if check[0] == INF:
-            return -1
-        else:
-            return check[0]
+            if (nums[mid] < nums[0]) == (target < nums[0]):
+                num_at_mid = nums[mid]
+            else:
+                if target < nums[mid]:
+                    num_at_mid = -INF
+                else:
+                    num_at_mid = INF
+
+            if target < num_at_mid:
+                right = mid - 1
+            elif target > num_at_mid:
+                left = mid + 1
+            else:
+                return mid
+            
+        return -1
 
 Solution()
