@@ -1,33 +1,63 @@
-"""
-    시간 복잡도 추론
-    전체 for-loop 한 번 돌기 때문에 O(N)
-    city.upper(): 도시 이름이 최대 20자이기 때문에 O(1)
-    cache.remove(city): queue를 전체 탐색해야 하기 때문에 O(N)
-    cache.append(city): queue이기 때문에 O(1)
+class DLLNode:
+    def __init__(self, key):
+        self.key = key
+        self.next = None
+        self.prev = None
 
-    최악의 경우 O(N^2)의 풀이이다.
-"""
+class Cache:
+    def __init__(self, capa):
+        self.head = DLLNode(0)
+        self.tail = DLLNode(0)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+        self.map = {}
+        self.cnt = 0
+        self.capa = capa
+    
+    def deleteNode(self, node):
+        node.prev.next = node.next
+        node.next.prev = node.prev
 
+    def addToHead(self, node):
+        node.next = self.head.next
+        node.next.prev = node
+        self.head.next = node
+        node.prev = self.head
 
-from collections import deque
+    def get(self, key):
+        node = None
+        if key in self.map:
+            node = self.map[key]
+            self.deleteNode(node)
+            self.addToHead(node)
+        return node
+
+    def set(self, key):
+        node = DLLNode(key)
+        if self.cnt < self.capa:
+            self.map[key] = node
+            self.addToHead(node)
+            self.cnt += 1
+        else:
+            del self.map[self.tail.prev.key]
+            self.deleteNode(self.tail.prev)
+            self.map[key] = node
+            self.addToHead(node)
 
 def solution(cacheSize, cities):
     if cacheSize == 0:
         return 5 * len(cities)
-    
+
     answer = 0
-    cache = deque()
     
+    cache = Cache(cacheSize)
+
     for city in cities:
         city = city.upper()
-        try:
-            cache.remove(city)
-            cache.append(city)
+        if cache.get(city):
             answer += 1
-        except:
-            if len(cache) == cacheSize:
-                cache.popleft()
-            cache.append(city)
+        else:
+            cache.set(city)
             answer += 5
     
     return answer
