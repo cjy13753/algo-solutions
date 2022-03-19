@@ -1,8 +1,8 @@
 """ 
-Attempt #4
+Attempt #5
 
-Runtime: 673 ms, faster than 48.28% of Python3 online submissions for Network Delay Time.
-Memory Usage: 16.5 MB, less than 47.12% of Python3 online submissions for Network Delay Time.
+Runtime: 583 ms, faster than 63.74% of Python3 online submissions for Network Delay Time.
+Memory Usage: 16.6 MB, less than 33.34% of Python3 online submissions for Network Delay Time.
 """
 
 import heapq
@@ -16,16 +16,16 @@ class Solution:
         distances[k] = 0
         minheap = []
         adjList = [[] for _ in range(n + 1)]
+        visited = set()
         for source, target, weight in times:
             adjList[source].append((target, weight))
         heapq.heappush(minheap, (0, k))
         
         while minheap:
-            minDistance, now = heapq.heappop(minheap)
-            if distances[now] < minDistance:
-                continue
+            _, now = heapq.heappop(minheap)
+            visited.add(now)
             for adjNode, weight in adjList[now]:
-                if weight + distances[now] < distances[adjNode]:
+                if not adjNode in visited and weight + distances[now] < distances[adjNode]:
                     distances[adjNode] = weight + distances[now]
                     heapq.heappush(minheap, (distances[adjNode], adjNode))
         
