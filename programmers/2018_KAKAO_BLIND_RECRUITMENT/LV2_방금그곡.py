@@ -10,12 +10,22 @@ O((N-M)*M), M길이의 단어가 N길이의 단어에 존재하는지 찾기
 
 from collections import Counter
 
+def substitute(melody):
+    temp = []
+    for i in range(len(melody)):
+        if melody[i] == '#':
+            popped = temp.pop()
+            temp.append(popped.lower())
+        else:
+            temp.append(melody[i])
+    return ''.join(temp)
+
+
 def solution(m, musicinfos):
     answer = "(None)"
     playedTime = 0
-    
-    for old, new in [("C#", "c"), ("D#", "d"), ("F#", "f"), ("G#", "g"), ("A#", "a")]:
-        m = m.replace(old, new)
+
+    m = substitute(m)
     
     for musicinfo in musicinfos:
         start, end, title, melody = musicinfo.split(',')
@@ -25,8 +35,7 @@ def solution(m, musicinfos):
         startMinute = int(start[3:])
         durationReal = (endHour - startHour) * 60 + (endMinute - startMinute)
 
-        for old, new in [("C#", "c"), ("D#", "d"), ("F#", "f"), ("G#", "g"), ("A#", "a")]:
-            melody = melody.replace(old, new)
+        melody = substitute(melody)
 
         counter = Counter(melody)
         durationOriginal = sum(counter.values())
