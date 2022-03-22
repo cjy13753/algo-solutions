@@ -1,6 +1,18 @@
 """ 
 Attempt #1
 성공, 49m 소요
+
+시간 복잡도:
+대략 O(m*t)가 될 것 같다. m: 게임에 참가하는 인원, t: 미리 구할 숫자의 개수
+solution 함수에 있는 첫 번째 while loop에 의해 결정될 것 같다.
+numberToBase의 경우 num을 계속 base로 나눠주기 때문에
+logarithmic한 시간 복잡도를 가질 것 같고, while loop을 돌아도
+linear * logarithmic이라서 무시해도 될 수준일 것 같다.
+
+공간 복잡도:
+아쉬움 남는 부분은 전체 문자열을 미리 구해놓지 않고 iterator로 만들었으면
+공간 복잡도를 낮출 수 있지 않았을까?
+다른 사람들 풀이도 참고했으나 일단 먼저 전체 문자열 구해놓고 답을 구함.
 """
 
 from collections import deque
