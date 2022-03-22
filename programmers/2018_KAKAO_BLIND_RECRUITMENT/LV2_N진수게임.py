@@ -17,8 +17,7 @@ linear * logarithmic이라서 무시해도 될 수준일 것 같다.
 
 from collections import deque
 
-def convertToAlphabet(num):
-    return ['A', 'B', 'C', 'D', 'E', 'F'][num - 10]
+bigNums = ['A', 'B', 'C', 'D', 'E', 'F']
 
 def numberToBase(num, base):
     if num == 0:
@@ -27,15 +26,16 @@ def numberToBase(num, base):
     while num:
         q, r = divmod(num, base)
         if r >= 10:
-            r = convertToAlphabet(r)
-        digits.appendleft(str(r))
+            digits.appendleft(bigNums[r - 10])
+        else:
+            digits.appendleft(str(r))
         num = q
     return ''.join(digits)
 
 def solution(n, t, m, p):
     fullString = ''
     num = 0
-    while len(fullString) < m * (t - 1) + p:
+    while len(fullString) < m * t:
         fullString += numberToBase(num, n)
         num += 1
     
