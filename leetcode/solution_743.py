@@ -1,45 +1,33 @@
-'''
-Summary - Attempt #3
+""" 
+Attempt #5
 
-Your own answer?: No
-Reference: https://leetcode.com/problems/network-delay-time/discuss/187713/Python-concise-queue-and-heap-solutions
+Runtime: 583 ms, faster than 63.74% of Python3 online submissions for Network Delay Time.
+Memory Usage: 16.6 MB, less than 33.34% of Python3 online submissions for Network Delay Time.
+"""
 
-Runtime: 492 ms, faster than 43.93% of Python3 online submissions for Network Delay Time.
-Memory Usage: 16.3 MB, less than 25.06% of Python3 online submissions for Network Delay Time.
-
-Basic approach: dijkstra with priority queue
-'''
-
-
-import sys
-from typing import List
-from collections import defaultdict
 import heapq
-input = sys.stdin.readline
+from typing import List
 
 class Solution:
-    def __init__(self) -> None:
-        times = [[2,1,1],[2,3,1],[3,4,1]]
-        n = 4
-        k = 2
-
-        print(self.networkDelayTime(times, n, k))
-
     def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
-        adj_list = defaultdict(list)
-        for src, dst, cost in times:
-            adj_list[src].append((dst, cost))
-        distance = {}
-        minheap = [(0, k)]
-
-        while minheap:
-            cost, src = heapq.heappop(minheap)
-
-            if src not in distance:
-                distance[src] = cost
-                for dst, newCost in adj_list[src]:
-                    heapq.heappush(minheap, (cost + newCost, dst))
+        INF = 1_000_000_000
+        distances = [INF] * (n + 1)
+        distances[0] = 0
+        distances[k] = 0
+        minheap = []
+        adjList = [[] for _ in range(n + 1)]
+        visited = set()
+        for source, target, weight in times:
+            adjList[source].append((target, weight))
+        heapq.heappush(minheap, (0, k))
         
-        return max(distance.values()) if len(distance) == n else -1
-
-Solution()
+        while minheap:
+            _, now = heapq.heappop(minheap)
+            visited.add(now)
+            for adjNode, weight in adjList[now]:
+                if not adjNode in visited and weight + distances[now] < distances[adjNode]:
+                    distances[adjNode] = weight + distances[now]
+                    heapq.heappush(minheap, (distances[adjNode], adjNode))
+        
+        maxDist = max(distances)
+        return -1 if maxDist == INF else maxDist
