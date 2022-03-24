@@ -2,36 +2,38 @@ from typing import List
 
 class Solution:
     def findItinerary(self, tickets: List[List[str]]) -> List[str]:
-        answer = [[]]
+        tickets.sort()
         itinerary = []
-        numRemainingTickets = [len(tickets)]
-        adjList = {}
-        for departCity, arriveCity in tickets:
-            if departCity not in adjList:
-                adjList[departCity] = []
-            adjList[departCity].append(arriveCity)
+        targets = {}
+        for src, dst in tickets:
+            if src not in targets:
+                targets[src] = []
+            targets[src].append(dst)
 
-        def dfs(departCity):
-            itinerary.append(departCity)
-            
-            if departCity not in adjList or len(adjList[departCity]) == 0:
-                if numRemainingTickets[0] == 0:
-                    if len(answer[0]) == 0:
-                        answer[0] = itinerary[:]
+        def dfs(startCity: str) -> bool:
+            itinerary.append(startCity)
+
+            if startCity not in targets:
+                if len(itinerary) -1 == len(tickets):
+                    return True
+                else:
+                    return False
+            else:
+                if len(targets[startCity]) == 0:
+                    if len(itinerary) -1 == len(tickets):
+                        return True
                     else:
-                        if ''.join(itinerary) < ''.join(answer[0]):
-                            answer[0] = itinerary[:]
-                return
-
-            for arriveCity in list(adjList[departCity]):
-                adjList[departCity].remove(arriveCity)
-                numRemainingTickets[0] -= 1
-                dfs(arriveCity)
-                itinerary.pop()
-                adjList[departCity].append(arriveCity)
-                numRemainingTickets[0] += 1
+                        return False
+                else:
+                    for idx, arriveCity in enumerate(targets[startCity]):
+                        targets[startCity].remove(arriveCity)                        
+                        if dfs(arriveCity):
+                            return True
+                        targets[startCity].insert(idx, arriveCity)
+                        itinerary.pop()
+                    return False
 
         dfs("JFK")
-        return answer[0]
+        return itinerary
 
 print(Solution().findItinerary([["EZE","AXA"],["TIA","ANU"],["ANU","JFK"],["JFK","ANU"],["ANU","EZE"],["TIA","ANU"],["AXA","TIA"],["TIA","JFK"],["ANU","TIA"],["JFK","TIA"]]))
