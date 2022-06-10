@@ -1,6 +1,5 @@
-//Runtime: 21 ms, faster than 91.26% of C# online submissions for Climbing Stairs.
-//Memory Usage: 26.4 MB, less than 22.12% of C# online submissions for Climbing Stairs.
-//https://leetcode.com/problems/climbing-stairs/
+//Runtime: 29 ms, faster than 61.33 % of C# online submissions for Climbing Stairs.
+//Memory Usage: 25 MB, less than 92.51 % of C# online submissions for Climbing Stairs.
 
 void Main()
 {
@@ -10,34 +9,27 @@ void Main()
 public class Solution
 {
 	int[] dp = new int[46];
+
+	public Solution()
+	{
+		Array.Fill(dp, -1);
+		dp[1] = 1;
+		dp[2] = 2;
+	}
+
 	
 	public int ClimbStairs(int n)
 	{
-		if (n == 1)
+		if (dp[n] != -1)
 		{
-			return 1;
-		}
-		
-		if (n == 2)
-		{
-			return 2;
+			return dp[n];
 		}
 		
 		int oneAhead = 0;
 		int twoAhead = 0;
 		
-		if (dp[n-1] == 0)
-		{
-			dp[n-1] = ClimbStairs(n-1);
-		}
-		oneAhead = dp[n-1];
+		dp[n] = ClimbStairs(n-1) + ClimbStairs(n-2);
 		
-		if (dp[n-2] == 0)
-		{
-			dp[n-2] = ClimbStairs(n-2);
-		}
-		twoAhead = dp[n-2];
-		
-		return oneAhead + twoAhead;
+		return dp[n];
 	}
 }
