@@ -1,3 +1,9 @@
+// Time Complexity: O(N)
+// Runtime: 249 ms, faster than 46.40% of C# online submissions for Two Sum.
+
+// Space Complexity: O(N)
+// Memory Usage: 43 MB, less than 48.54% of C# online submissions for Two Sum.
+
 public class Solution
 {
 	public int[] TwoSum(int[] nums, int target)
@@ -5,9 +11,7 @@ public class Solution
 		var result = new int[2];
 		
 		var hash = new Dictionary<int, int>();
-		hash.Add(nums[0], 0);
-		
-		for (int i = 1; i < nums.Length; i++)
+		for (int i = 0; i < nums.Length; i++)
 		{
 			if (hash.ContainsKey(target - nums[i]))
 			{
