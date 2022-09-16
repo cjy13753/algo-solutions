@@ -1,7 +1,7 @@
-// Time Complexity: O(n) where n is the number of elements in the 2d array
+// Time Complexity: O(m * n) where m is the width, and n is the height of the 2d array.
 // Runtime: 161 ms, faster than 87.30% of C# online submissions for Flood Fill.
 
-// Space Complexity: O(log n) where n is the number of elements in the 2d array
+// Space Complexity: not very sure
 // Memory Usage: 46 MB, less than 7.36% of C# online submissions for Flood Fill.
 
 public class Solution {
@@ -10,33 +10,30 @@ public class Solution {
         {
             return image;
         }
+        var height = image.Length;
+        var width = image[0].Length;
         
-        var originColor = image[sr][sc];
-        var q = new Queue<Tuple<int, int>>();
-        var start = new Tuple<int, int>(sr, sc);
-        q.Enqueue(start);
-        var visited = new HashSet<Tuple<int,int>>();
-        visited.Add(start);
+        var originalColor = image[sr][sc];
+        image[sr][sc] = color;
+
+        var q = new Queue<int[]>();
+        q.Enqueue(new int[]{sr, sc});
         
-        var deltas = new List<Tuple<int, int>>{new Tuple<int, int>(0, 1), new Tuple<int, int>(1, 0), new Tuple<int, int>(0, -1), new Tuple<int, int>(-1, 0)};
+        var deltas = new List<int[]>{new int[]{0, 1}, new int[]{1, 0}, new int[]{0, -1}, new int[]{-1, 0}};
         
         while (q.Count != 0)
         {
             var rc = q.Dequeue();
-            var row = rc.Item1;
-            var col = rc.Item2;
-            image[row][col] = color;
+            var row = rc[0];
+            var col = rc[1];
             
             foreach (var delta in deltas)
             {
-                var newRow = row + delta.Item1;
-                var newCol = col + delta.Item2;
-                var newRC = new Tuple<int, int>(newRow, newCol);
-                if (newRow >= 0 && newRow < image.Length && newCol >= 0 && newCol < image[0].Length && image[newRow][newCol] == originColor && !visited.Contains(newRC))
-                {
-                    q.Enqueue(newRC);
-                    visited.Add(newRC);
-                }
+                var newRow = row + delta[0];
+                var newCol = col + delta[1];
+                if (newRow < 0 || newRow >= height || newCol < 0 || newCol >= width || image[newRow][newCol] != originalColor) continue;
+                image[newRow][newCol] = color;
+                q.Enqueue(new int[]{newRow, newCol});
             }
         }
         
