@@ -1,8 +1,8 @@
 // Time Complexity: O(h) where h is the height of the binary search tree
-// Runtime: 182 ms, faster than 27.58% of C# online submissions for Lowest Common Ancestor of a Binary Search Tree.
+// Runtime: 105 ms, faster than 97.48% of C# online submissions for Lowest Common Ancestor of a Binary Search Tree.
 
 // Space Complexity: O(1)
-// Memory Usage: 41.4 MB, less than 97.39% of C# online submissions for Lowest Common Ancestor of a Binary Search Tree.
+// Memory Usage: 46 MB, less than 10.44% of C# online submissions for Lowest Common Ancestor of a Binary Search Tree.
 
 /**
  * Definition for a binary tree node.
@@ -20,55 +20,19 @@ public class Solution {
         
         while (true)
         {
-            int pDecider;
-            int qDecider;
-            
-            var pDifference = p.val - pointer.val;
-            if (pDifference > 0)
-            {
-                pDecider = 1;   
-            }
-            else if (pDifference == 0)
-            {
-                pDecider = 0;
-            }
-            else
-            {
-                pDecider = -1;
-            }
-            
-            var qDifference = q.val - pointer.val;
-            if (qDifference > 0)
-            {
-                qDecider = 1;   
-            }
-            else if (qDifference == 0)
-            {
-                qDecider = 0;
-            }
-            else
-            {
-                qDecider = -1;
-            }
-            
-            var decider = pDecider * qDecider;
-            
-            if (decider == 0 || decider < 0)
-            {
-                break;
-            }
-            
-            if (pDecider > 0)
+            if (p.val > pointer.val && q.val > pointer.val)
             {
                 pointer = pointer.right;
                 continue;
             }
             
-            if (pDecider < 0)
+            if (p.val < pointer.val && q.val < pointer.val)
             {
                 pointer = pointer.left;
                 continue;
             }
+            
+            break;
         }
         
         return pointer;
