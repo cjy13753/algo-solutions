@@ -1,35 +1,31 @@
-//Runtime: 29 ms, faster than 61.33 % of C# online submissions for Climbing Stairs.
-//Memory Usage: 25 MB, less than 92.51 % of C# online submissions for Climbing Stairs.
+// Time Complexity: O(n) where n is the steps it takes to reach the top
+// Runtime: 50 ms, faster than 7.79% of C# online submissions for Climbing Stairs.
 
-void Main()
-{
-	new Solution().ClimbStairs(4).Dump();
-}
+// Space Complexity: O(1)
+// Memory Usage: 24.9 MB, less than 95.05% of C# online submissions for Climbing Stairs.
 
-public class Solution
-{
-	int[] dp = new int[46];
-
-	public Solution()
-	{
-		Array.Fill(dp, -1);
-		dp[1] = 1;
-		dp[2] = 2;
-	}
-
-	
-	public int ClimbStairs(int n)
-	{
-		if (dp[n] != -1)
-		{
-			return dp[n];
-		}
-		
-		int oneAhead = 0;
-		int twoAhead = 0;
-		
-		dp[n] = ClimbStairs(n-1) + ClimbStairs(n-2);
-		
-		return dp[n];
-	}
+public class Solution {
+    public int ClimbStairs(int n) {
+        
+        if (n < 2)
+        {
+            return 1;
+        }
+        
+        var twoAhead = 1;
+        var oneAhead = 1;
+        var result = 2;
+        
+        var curPos = 2;
+        
+        while (curPos < n)
+        {
+            curPos++;
+            twoAhead = oneAhead;
+            oneAhead = result;
+            result = twoAhead + oneAhead;
+        }
+        
+        return result;
+    }
 }
