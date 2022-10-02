@@ -1,116 +1,58 @@
-// FAIL TO SOLVE
+// Time Complexity: O(n + m) where n and m are the number of characters in s and t
+// Runtime: 133 ms, faster than 20.23% of C# online submissions for Backspace String Compare.
 
-
-
-/*
-first brute force approach
-convert s and t following the instructions and then compare the two converted strings to see if they are equal.
-The two converted strings will take up O(m + n) space complexity where m and n are length of the converted strings each.
-
-now o(n) time complexity and O(1) space complexity approach
-Since it's a O(1) space complexity solution, I will probably need to use some limited number of pointers.
-
-    |  
-s: abk##c
-
-    |  
-t: ad##ck
-
-
-
-s: ab#
-t: aca#
-
-s: ac###a
-t: ab###d
-
-steps
-1: are they equal? (a == a)
-yes
-2: are they equal? (b == d)
-no
-3: do they have a following back space character?
-only t does.
-4: does s have two  following back sapce characters?
-yes
-5: then move the pointers forward by one character
-6: one pointer is pointing to null, and another is not, then return false
-
-
-when condition is false, iterate until both the faults become 0 again.
-if we exit the loop withougt making the condition back to true, return false;
-*/
-
+// Space Complexity: O(n + m) where n and m are the number of characters in s and t
+// Memory Usage: 37.2 MB, less than 36.68% of C# online submissions for Backspace String Compare.
 
 public class Solution {
     public bool BackspaceCompare(string s, string t) {
-        var sPointer = 0;
-        var tPointer = 0;
-        var sFault = 0;
-        var tFault = 0;
-        var condition = true;
+        var sStack = new Stack<char>();
+        var tStack = new Stack<char>();
         
-        
-        while (sPointer < s.Length && tPointer < t.Length)
+        foreach (var c in s)
         {
-            var sChar = s[sPointer];
-            var tChar = t[tPointer];
-            
-            if (condition)
+            if (c == '#')
             {
-                if (sChar == tChar)
+                if (sStack.Count() > 0)
                 {
-                    sPointer++;
-                    tPointer++;
-                    continue;
+                    sStack.Pop();
                 }
-                
-                condition = false;
-                sFault++;
-                tFault++;
-                sPointer++;
-                tPointer++;
-                continue;
             }
-            
-            if (sFault > 0)
+            else
             {
-                if (sChar == '#')
-                {
-                    sFault--;
-                }
-                else
-                {
-                    sFault++;
-                }
-                sPointer++;
+                sStack.Push(c);
             }
-            
-            if (tFault > 0)
-            {
-                if(tChar == '#')
-                {
-                    tFault--;
-                }
-                else
-                {
-                    tFault++;
-                }
-                tPointer++;
-            }
-            
-            if (sFault == 0 && tFault == 0)
-            {
-                condition = true;
-            }
-            
         }
         
-        if (sPointer < s.Length || tPointer < t.Length)
+        foreach (var c in t)
         {
-            return false;
+            if (c == '#')
+            {
+                if (tStack.Count() > 0)
+                {
+                    tStack.Pop();
+                }
+            }
+            else
+            {
+                tStack.Push(c);
+            }
         }
         
-        return condition;
+        if (sStack.Count() == tStack.Count())
+        {
+            while (sStack.Count() != 0)
+            {
+                if (sStack.Pop() != tStack.Pop())
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        return false;
+        
     }
 }
