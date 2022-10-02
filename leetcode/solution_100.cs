@@ -53,19 +53,15 @@ otherwise, return false
  */
 public class Solution {
     public bool IsSameTree(TreeNode p, TreeNode q) {
-        var pPointer = p;
-        var qPointer = q;
+        var queue = new Queue<TreeNode>();
         
-        var pQueue = new Queue<TreeNode>();
-        var qQueue = new Queue<TreeNode>();
+        queue.Enqueue(p);
+        queue.Enqueue(q);
         
-        pQueue.Enqueue(p);
-        qQueue.Enqueue(q);
-        
-        while (pQueue.Count() > 0 && qQueue.Count() > 0)
+        while (queue.Count() > 1)
         {
-            var pPopped = pQueue.Dequeue();
-            var qPopped = qQueue.Dequeue();
+            var pPopped = queue.Dequeue();
+            var qPopped = queue.Dequeue();
             
             if (pPopped is null && qPopped is null)
             {
@@ -74,23 +70,16 @@ public class Solution {
             
             if (pPopped is not null && qPopped is not null && pPopped.val == qPopped.val)
             {
-                    pQueue.Enqueue(pPopped.left);
-                    pQueue.Enqueue(pPopped.right);
-                    qQueue.Enqueue(qPopped.left);
-                    qQueue.Enqueue(qPopped.right);
+                    queue.Enqueue(pPopped.left);
+                    queue.Enqueue(qPopped.left);
+                    queue.Enqueue(pPopped.right);
+                    queue.Enqueue(qPopped.right);
                     continue;
             }
             
             return false;
         }
         
-        
-        if (pQueue.Count() == 0 && qQueue.Count() == 0)
-        {
-            return true;
-        }
-        
-        return false;
-        
+        return queue.Count == 0;
     }
 }
