@@ -1,58 +1,87 @@
-// Time Complexity: O(n^2) where n is the number of elements in the given array.
-// Runtime: 339 ms, faster than 14.38% of C# online submissions for Move Zeroes.
+// Time Complexity: O(n) where n is the number of elements in the given array.
+// Runtime: 211 ms, faster than 77.26% of C# online submissions for Move Zeroes.
 
 // Space Complexity: O(1)
-// Memory Usage: 47.1 MB, less than 54.27% of C# online submissions for Move Zeroes.
+// Memory Usage: 47.3 MB, less than 32.20% of C# online submissions for Move Zeroes.
+
 
 /*
+new approach
 
-replace all zeros with the biggest possible number and count the number of zeros.
-Apply an in-place sorting algorithm on the array, and replace the biggest elements with 0 the counted number of times at the beginning.
-TC: O(nlogn), SC: O(1)
+how about using two pointers?
+one pointer(i) looks for the position holding 0, another(j) looks for  the position holding non-zero
+we start the code by first finding appropriate i.
+and then find appropriate j that starts from the next of i.
 
-what in-place sorting algorithms are out there?
-quick sort!
-bubble sort...
+replace the value in i with the value in j.
 
-Since the follow-up suggeests we minimize the total number of operations done, it'd be sensible to go with the algorithm with less time complexity.
 
-I realize a fatal error after implementing quick sort.
-Quick sort sorts the whole array in either an ascending order or a descending order when what I was asked to do is to keep the relative order of the original element.
+    i j
+1 2 0 3 4 0 5
 
-Then, I will use an approach similar to a bubble sort, which in the worst case may take O(n^2) time complexity.
+      i j
+1 2 3 0 4 0 5
+
+        i   j
+1 2 3 4 0 0 5
+
+    i j
+1 2 0 3 4 5
+
+      i j
+1 2 3 0 4 5
+
+i for next 0, j for next non-zero
+is there any case where i meets or exceeds j? never
+
 */
 
 
 public class Solution {
     public void MoveZeroes(int[] nums) {
-        var idx = 0;
+        var zero = MoveToNextZero(nums, 0);
+        var nonZero = MoveToNextNonZero(nums, zero + 1);
         
-        while (idx < nums.Length)
+        while (nonZero < nums.Length)
         {
-            if (nums[idx] != 0)
+            Swap(nums, zero, nonZero);
+            zero = MoveToNextZero(nums, zero);
+            nonZero = MoveToNextNonZero(nums, nonZero);
+        }
+    }
+    
+    private void Swap(int[] nums, int i, int j)
+    {
+        var temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    
+    private int MoveToNextZero(int[] nums, int zero)
+    {
+        while (zero < nums.Length)
+        {
+            if (nums[zero] == 0)
             {
-                idx++;
-                continue;
-            }
-            
-            var pointer = idx + 1;
-            
-            while (pointer < nums.Length)
-            {
-                if (nums[pointer] == 0)
-                {
-                    pointer++;
-                    continue;
-                }
-                
-                var temp = nums[idx];
-                nums[idx] = nums[pointer];
-                nums[pointer] = temp;
                 break;
             }
-            
-            idx++;
+            zero++;
         }
         
+        return zero;
+    }
+    
+    private int MoveToNextNonZero(int[] nums, int nonZero)
+    {
+        while (nonZero < nums.Length)
+        {
+            if (nums[nonZero] != 0)
+            {
+                break;
+            }
+            nonZero++;
+        }
+        
+        return nonZero;
     }
 }
