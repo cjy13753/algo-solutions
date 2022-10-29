@@ -1,62 +1,44 @@
-// Wrong Answer
+// Time Complexity: O(n) where n is the given integer because I need to find the maximum possible candidate to be a square root of the given integer.
+// Runtime: 56 ms, faster than 25.19% of C# online submissions for Sqrt(x).
 
-
-/*
-x = y * y, then y is square root of x.
-2^31 - 1 < 2^30 * 2^30
-therefore, the biggest candidate for y is (2^30 - 1)
-0 <= y <= 2^30 - 1
-y^2 <= x 
-do a binary search to find the biggest number whose squared value is smaller than or equal to x.
-*/
+// Space Complexity: O(1)
+// Memory Usage: 25.7 MB, less than 20.69% of C# online submissions for Sqrt(x).
 
 public class Solution
 {
 	public int MySqrt(int x)
 	{
-		var start = Convert.ToInt32(Math.Pow(2, 15));
-		var end = Convert.ToInt32(Math.Pow(2, 16));
-		var boundary = 0;
-		
-		while (start <= end)
-		{
-			var mid = start + (end - start) / 2;
-			var val = Convert.ToInt32(mid * mid);
-			if (val == 0)
-			{
-				end = mid - 1;
-			}
-			else
-			{
-				boundary = Math.Max(boundary, mid);
-				start = mid + 1;
-			}
-		}
-
-		start = 0;
-		end = boundary;
-		
-		var ans = 0;
-
-		while (start <= end)
-		{
-			var mid = start + (end - start) / 2;
-			if (mid * mid < x)
-			{
-				ans = Math.Max(ans, mid);
-				start = mid + 1;
-			}
-			else if (mid * mid == x)
-			{
-				return mid;
-			}
-			else
-			{
-				end = mid - 1;
-			}
-		}
-
-		return ans;
-
+        var finder = (int)Math.Pow(2, 15);
+        var maxSquareRoot = 0;
+        while (finder * finder > 0)
+        {
+            maxSquareRoot = finder;
+            finder++;
+        }
+        
+        var res = 0;
+        var start = 0;
+        var end = maxSquareRoot;
+        
+        while (start <= end)
+        {
+            var mid = start + (end - start) / 2;
+            var square = mid * mid;
+            if (square > x)
+            {
+                end = mid - 1;
+            }
+            else if (square == x)
+            {
+                return mid;
+            }
+            else
+            {
+                res = Math.Max(res, mid);
+                start = mid + 1;
+            }
+        }
+        
+        return res;
 	}
 }
