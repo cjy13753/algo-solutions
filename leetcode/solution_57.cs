@@ -2,64 +2,59 @@
 
 /*
 
-leftMost
-rightMost
+The core concept of the approach to this problem is to not insert the new interval until when it's certain to insert the new interval and how it should be merged with neighbors.
 
-case 1: newLeft < newRight < interval[0] < interval[1] => Add
-case 2: newLeft < interval[0] < newRight < interval[1] => 
-case 3: interval[0] < newLeft < newRight < interval[1] =>
-case 4: interval[0] < newLeft < interval[1] < newRight => 
-case 5: interval[0] < interval[1] < newLeft < newRight => 
+
+if newInterval end < interval start
+     put newInterval and, put the rest
+     return res
+else
+    merged's left is min of newInterval left and iteration's left
+
+if newInterval start > interval's end
+    just put the interval in the res
+
+else
+    end merg's right is max of newInterval's end and iterations'right
+
+put the last in the res
+
+return
+
+
 
 */
 
-
 public class Solution {
     public int[][] Insert(int[][] intervals, int[] newInterval) {
-        if (intervals.Length == 0)
-        {
-            return intervals;
-        }
-        
         var res = new List<int[]>();
-        var newLeft = newInterval[0];
-        var newRight = newInterval[1];
+        var start = 0;
         
-        var left = int.MaxValue;
-        var right = 0;
-        
-        for (var interval in intervals)
+        for (int i = 0; i < intervals.Length; i++)
         {
-            left = Math.Min(left, interval[0]);
-            if (newLeft >= interval[0])
+            var interval = intervals[i];
+            
+            if (newInterval[1] < interval[0])
             {
-                if (newLeft <= interval[1])
+                res.Add(newInterval);
+                if (i < intervals.Length - 1)
                 {
-                    
+                    var rest = intervals[i..].Select(e => (int[])e.Clone()).ToArray();
+                    res.Add(rest);
                 }
-                else
-                {
-                    right = interval[1];
-                    res.Add(new int[2]{left, right});
-                }
+                return res;
+            }
+            else if (interval[1] < newInterval[0])
+            {
+                res.Add((int[])interval.Clone());
             }
             else
             {
-                left = newLeft;
-                if (newRight <= interval[1])
-                {
-                    right = interval[1];
-                    res.Add(new int[2]{left, right});
-                }
-                else
-                {
-                    right = newRight;
-                }
+                start = Math.Min(interval[0], newInterval[0]);
             }
         }
         
-        
+        res.Add(new int[]{start, });
         
         return res.ToArray();
-    }
 }
