@@ -1,76 +1,86 @@
-// Time Limit Exceeded
+// Time Complexity: ?
+// Space Complexity: O(m * n) where m is the row count, and n is the col count because in the worst case, all the cells in the mat contain 0
 
 /*
-BFS for each cell until finding 0?
-I think this approach is too wasteful in terms of time complexity, but can't think of any alternative.
+find at level 1
+find at level 2
+find at level 3
+and do this step for all 0 at the same time.
+
+what if one 0's bfs encounter a path that another 0's path?
+if the number already in the cell is bigger than what the other 0 has to offer, replace it with the lower one and keep going.
+if that number is smaller, the other 0's stop bfs
+if that number is 0, stop bfs
+
+100 100
+011 010
+000
+*/
+
+/*
+
+
+find at level 1
+find at level 2
+find at level 3
+and do this step for all 0 at the same time.
+
+what if one 0's bfs encounter a path that another 0's path?
+if the number already in the cell is bigger than what the other 0 has to offer, replace it with the lower one and keep going.
+if that number is smaller, the other 0's stop bfs
+if that number is 0, stop bfs
+
+100 100
+011 010
+000
+
 */
 
 public class Solution {
-    public int[][] UpdateMatrix(int[][] mat) {
-        var width = mat.Length;
-        var height = mat[0].Length;
-        var res = new int[width][];
+    public int[][] UpdateMatrix(int[][] mat)
+    {
+        var colCount = mat[0].Length;
+        var rowCount = mat.Length;
         
-        for (int i = 0; i < width; i++)
+        var res = new int[rowCount][];
+        for (int i = 0; i < rowCount; i++)
         {
-            res[i] = new int[height];
+            res[i] = new int[colCount];
         }
         
-        for (var row = 0; row < width; row++)
+        var queue = new Queue<(int, int, int)>(); // row, col, distance
+        for (int row = 0; row < rowCount; row++)
         {
-            for (var col = 0; col < height; col++)
+            for (int col = 0; col < colCount; col++)
             {
+                res[row][col] = int.MaxValue;
                 if (mat[row][col] == 0)
                 {
-                    res[row][col] = 0;
+                    queue.Enqueue((row, col, 0));
                 }
-                else
+            }
+        }
+        
+        while (queue.Count > 0)
+        {
+            var (row, col, distance) = queue.Dequeue();
+            if (res[row][col] <= distance)
+            {
+                continue;
+            }
+            
+            res[row][col] = distance;
+            foreach (var (dRow, dCol) in new List<(int, int)>{(1, 0), (-1, 0), (0, 1), (0, -1)})
+            {
+                var newRow = row + dRow;
+                var newCol = col + dCol;
+                if (newRow >= 0 && newRow < rowCount && newCol >= 0 && newCol < colCount && res[newRow][newCol] > distance + 1)
                 {
-                    res[row][col] = bfs(mat, row, col);
+                    queue.Enqueue((newRow, newCol, distance + 1));
                 }
             }
         }
         
         return res;
-    }
-    
-    private int bfs(int[][] mat, int _row, int _col)
-    {
-        var width = mat.Length;
-        var height = mat[0].Length;
-        
-        var queue = new Queue<(int, int, int)>();
-        var directions = new List<(int, int )> { (0, 1), (1, 0), (0, -1), (-1, 0)};
-        var visited = new HashSet<(int, int)>();
-        
-        var _distance = 0;
-        
-        queue.Enqueue((_row, _col, 0));
-        visited.Add((_row, _col));
-        
-        while (queue.Count > 0)
-        {
-            var (row, col, distance) = queue.Dequeue();
-            foreach (var (dRow, dCol) in directions)
-            {
-                var newRow = row + dRow;
-                var newCol = col + dCol;
-                
-                if (newRow >= 0 && newRow < width && newCol >= 0 && newCol < height && !visited.Contains((newRow, newCol)))
-                {
-                    if (mat[newRow][newCol] == 0)
-                    {
-                        return distance + 1;
-                    }
-                    else
-                    {
-                        queue.Enqueue((newRow, newCol, distance + 1));
-                        visited.Add((newRow, newCol));
-                    }
-                }
-            }
-        }
-        
-        return _distance;
     }
 }
