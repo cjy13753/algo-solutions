@@ -6,13 +6,33 @@ public class LRUCache {
 
     private class LinkedList
     {
-        public Node head = new Node(-1, -1); // dummy node
-        public Node tail = new Node(-1, -1); // dummy node
+        private Node head = new Node(-1, -1); // dummy node
+        private Node tail = new Node(-1, -1); // dummy node
 
         public LinkedList()
         {
             head.next = tail;
             tail.prev = head;
+        }
+        
+        public Node GetRealHead()
+        {
+            return head.next;
+        }
+        
+        public Node GetRealTail()
+        {
+            return tail.prev;
+        }
+
+        public Node GetDummyHead()
+        {
+            return head;
+        }
+
+        public Node GetDummyTail()
+        {
+            return tail;
         }
     }
 
@@ -80,19 +100,16 @@ public class LRUCache {
         prev.next = next;
         next.prev = prev;
 
-        var prevHead = linkedList.head.next;
-        linkedList.head.next = node;
-        node.prev = linkedList.head;
-        node.next = prevHead;
-        prevHead.prev = node;
+        InsertAtFront(node);
         // Console.WriteLine($"key: {node.key}, value: {node.val} is upgraded to MRU");
     }
 
     private void InsertAtFront(Node node)
     {
-        var prevHead = linkedList.head.next;
-        linkedList.head.next = node;
-        node.prev = linkedList.head;
+        var prevHead = linkedList.GetRealHead();
+        var dummyHead = linkedList.GetDummyHead();
+        dummyHead.next = node;
+        node.prev = dummyHead;
         
         node.next = prevHead;
         prevHead.prev = node;
@@ -101,19 +118,20 @@ public class LRUCache {
 
     private void evictLRU()
     {
-        var nodeToEvict = linkedList.tail.prev;
+        var nodeToEvict = linkedList.GetRealTail();
         var keyToEvict = nodeToEvict.key;
         // Console.WriteLine($"{keyToEvict} is evicted");
         dict.Remove(keyToEvict);
         
-        nodeToEvict.prev.next = linkedList.tail;
-        linkedList.tail.prev = nodeToEvict.prev;
+        var dummyTail = linkedList.GetDummyTail();
+        nodeToEvict.prev.next = dummyTail;
+        dummyTail.prev = nodeToEvict.prev;
     }
 
     private void printAllNodes()
     {
         var result = "";
-        var node = linkedList.head;
+        var node = linkedList.GetDummyHead();
         while (node is not null)
         {
             var key = node.key;
